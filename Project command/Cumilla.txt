@@ -1,0 +1,104 @@
+===========SW3=========
+
+#Basic Setup
+Switch>enable
+Switch#configure terminal
+Switch(config)#hostname Sw3
+Sw3(config)#no ip domain-lookup 
+Sw3(config)#line console 0
+Sw3(config-line)#exec-timeout 0
+
+#VLAN Create
+Sw3(config)#vlan 10
+Sw3(config-vlan)#name Accounts
+Sw3(config-vlan)#exit
+
+Sw3(config)#vlan 20
+Sw3(config-vlan)#name Marketing
+Sw3(config-vlan)#exit
+
+Sw3(config)#vlan 30
+Sw3(config-vlan)#name IT
+Sw3(config-vlan)#exit
+
+Sw3(config)#interface range fastEthernet 0/1-4
+Sw3(config-if-range)#switchport mode access 
+Sw3(config-if-range)#switchport access vlan 10
+
+Sw3(config-if-range)#interface fastEthernet 0/5-7
+Sw3(config-if-range)#switchport mode access 
+Sw3(config-if-range)#switchport access vlan 20
+
+Sw3(config-if-range)#interface range fastEthernet 0/8-11
+Sw3(config-if-range)#switchport mode access 
+Sw3(config-if-range)#switchport access vlan 30
+
+#set Trunk Port
+Sw3(config)#interface gigabitEthernet 0/1
+Sw3(config-if)#switchport mode trunk 
+Sw3(config-if)#switchport trunk allowed vlan 10,20,30
+Sw3(config-if)#end 
+Sw3#write 
+
+
+
+
+
+
+
+
+===================Cumilla===========
+#Basic Setup :
+Router>enable
+Router#configure terminal 
+Router(config)#hostname CUMILLA
+CUMILLA(config)#no ip domain-lookup 
+CUMILLA(config)#line console 0
+CUMILLA(config-line)#exec-timeout 0
+CUMILLA(config-line)#exit
+
+CUMILLA(config)#interface gigabitEthernet 0/0
+CUMILLA(config-if)#no shutdown
+CUMILLA(config-if)#exit
+
+CUMILLA(config)#interface gigabitEthernet 0/0.10
+CUMILLA(config-subif)#encapsulation dot1Q 10
+CUMILLA(config-subif)#ip address 192.168.50.1 255.255.255.0
+CUMILLA(config-subif)#exit
+
+CUMILLA(config)#interface gigabitEthernet 0/0.20
+CUMILLA(config-subif)#encapsulation dot1Q 20
+CUMILLA(config-subif)#ip address 192.168.60.1 255.255.255.0
+CUMILLA(config-subif)#exit
+
+CUMILLA(config)#interface gigabitEthernet 0/0.30
+CUMILLA(config-subif)#encapsulation dot1Q 30
+CUMILLA(config-subif)#ip address 192.168.70.1 255.255.255.0
+CUMILLA(config-subif)#exit
+
+#Dhcp Setup :
+CUMILLA(config)#service dhcp 
+CUMILLA(config)#ip dhcp excluded-address 192.168.50.1 192.168.50.5
+CUMILLA(config)#ip dhcp excluded-address 192.168.60.1 192.168.60.5
+CUMILLA(config)#ip dhcp excluded-address 192.168.70.1 192.168.70.5
+
+#Dhcp pool for VLAN 10 : 
+CUMILLA(config)#ip dhcp pool vlan10
+CUMILLA(dhcp-config)#network 192.168.50.0 255.255.255.0
+CUMILLA(dhcp-config)#default-router 192.168.50.1
+CUMILLA(dhcp-config)#dns-server 8.8.8.8
+CUMILLA(dhcp-config)#exit
+
+#Dhcp pool for VLAN 20 :
+CUMILLA(config)#ip dhcp pool vlan20
+CUMILLA(dhcp-config)#network 192.168.60.0 255.255.255.0
+CUMILLA(dhcp-config)#default-router 192.168.60.1
+CUMILLA(dhcp-config)#dns-server 8.8.8.8
+CUMILLA(dhcp-config)#exit
+
+ #Dhcp pool for VLAN 30 :
+CUMILLA(config)#ip dhcp pool vlan30
+CUMILLA(dhcp-config)#network 192.168.70.0 255.255.255.0
+CUMILLA(dhcp-config)#default-router 192.168.70.1
+CUMILLA(dhcp-config)#dns-server 8.8.8.8
+CUMILLA(dhcp-config)#exit

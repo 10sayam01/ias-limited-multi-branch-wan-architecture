@@ -1,0 +1,217 @@
+============DHAKA============
+DHAKA#conf ter
+DHAKA(config)#interface gigabitEthernet  0/1
+DHAKA(config-if)#no shutdown 
+DHAKA(config-if)#ip address 200.0.0.1 255.255.255.252
+DHAKA(config-if)#exit
+
+#Default Route Towards ISP_A
+DHAKA(config)#ip route 0.0.0.0 0.0.0.0 200.0.0.2
+
+#Config NAT(PAT)
+DHAKA(config)#access-list 10 permit 192.168.10.0 0.0.0.255 
+DHAKA(config)#access-list 10 permit 192.168.20.0 0.0.0.255 
+DHAKA(config)#access-list 10 permit 192.168.30.0 0.0.0.255 
+DHAKA(config)#ip nat pool natp1 200.0.0.1 200.0.0.1 netmask 255.255.255.252
+DHAKA(config)#ip nat  inside source list 10 pool natp1 overload 
+
+DHAKA(config)#interface gigabitEthernet 0/0
+DHAKA(config-if)#ip nat inside 
+DHAKA(config-if)#exit
+
+DHAKA(config)#interface gigabitEthernet 0/1
+DHAKA(config-if)#ip nat outside 
+DHAKA(config-if)#exit
+
+
+============ISP_A===========
+
+Router>enable
+Router#configure terminal
+Router(config)#hostname ISP_A
+ISP_A(config)#no ip domain-lookup 
+ISP_A(config)#line console 0
+ISP_A(config-line)#exec-timeout 0
+ISP_A(config-line)#exit
+
+ISP_A(config)#inter gigabitEthernet 0/1
+ISP_A(config-if)#no shutdown
+ISP_A(config-if)#ip address 200.0.0.2 255.255.255.252
+ISP_A(config-if)#exit
+
+ISP_A(config)#interface gigabitEthernet 0/0
+ISP_A(config-if)#no shutdown
+ISP_A(config-if)#ip address 11.10.10.1 255.255.255.252
+ISP_A(config-if)#exit
+
+#Dafult Routes towards IIG
+ISP_A(config)#ip route 0.0.0.0 0.0.0.0 11.10.10.2
+
+
+==============CUMILLA================
+#Give IP in Interface
+CUMILLA(config)#interface gigabitEthernet 0/1
+CUMILLA(config-if)#no shutdown 
+CUMILLA(config-if)#ip address 201.0.0.2 255.255.255.252
+CUMILLA(config-if)#exit
+
+#Default Route Towards ISP_C
+CUMILLA(config)#ip route 0.0.0.0 0.0.0.0 201.0.0.1
+
+#SetUp NAT(pat)
+CUMILLA(config)#access-list 20 permit 192.168.50.0 0.0.0.255
+CUMILLA(config)#access-list 20 permit 192.168.60.0 0.0.0.255
+CUMILLA(config)#access-list 20 permit 192.168.70.0 0.0.0.255
+CUMILLA(config)#ip nat pool pool1 201.0.0.2 201.0.0.2 netmask 255.255.255.252
+CUMILLA(config)#ip nat inside source list 20 pool pool1 overload
+
+CUMILLA(config)#interface gigabitEthernet 0/0.10
+CUMILLA(config-subif)#ip nat inside
+CUMILLA(config-subif)#exit
+
+CUMILLA(config)#interface gigabitEthernet 0/0.20
+CUMILLA(config-subif)#ip nat inside
+CUMILLA(config-subif)#exit
+
+CUMILLA(config)#interface gigabitEthernet 0/0.30
+CUMILLA(config-subif)#ip nat inside
+CUMILLA(config-subif)#exit
+
+CUMILLA(config)#interface gigabitEthernet 0/1
+CUMILLA(config-if)#ip nat outside 
+CUMILLA(config-if)#exit
+
+
+==================ISP_C==============
+#Basic Config:
+Router>enable
+Router#configure terminal
+Router(config)#hostname ISP_C
+ISP_C(config)#no ip domain-lookup 
+ISP_C(config)#line con 0
+ISP_C(config-line)#exec-timeout 0
+ISP_C(config-line)#exit
+
+ISP_C(config)#interface gigabitEthernet 0/1
+ISP_C(config-if)#no shutdown 
+ISP_C(config-if)#ip address 201.0.0.1 255.255.255.252
+ISP_C(config-if)#exit
+ 
+ISP_C(config-if)#interface gigabitEthernet 0/0
+ISP_C(config-if)#no shutdown 
+ISP_C(config-if)#ip address 12.0.0.2 255.255.255.252
+ISP_C(config-if)#exit 
+
+#Static Route Towords IIG :
+ISP_C(config)#ip route 0.0.0.0 0.0.0.0 12.0.0.1
+
+===========CTG==============
+
+#give ip in Interface
+CTG(config)#interface gigabitEthernet 0/1
+CTG(config-if)#no shutdown
+CTG(config-if)#ip address 202.0.0.2 255.255.255.252
+CTG(config-if)#exit
+
+#Dafult Route towards ISP_B
+CTG(config)#ip route 0.0.0.0 0.0.0.0 202.0.0.1
+
+#NAT(PAT) Setup
+CTG(config)#access-list 30 permit 192.168.80.0 0.0.0.255
+CTG(config)#access-list 30 permit 192.168.90.0 0.0.0.255
+CTG(config)#ip nat pool p1 202.0.0.2 202.0.0.2 netmask 255.255.255.252
+CTG(config)#ip nat inside source list 30 pool p1 overload
+
+CTG(config)#interface gigabitEthernet 0/0.10
+CTG(config-subif)#ip nat inside 
+CTG(config-subif)#exit
+CTG(config)#interface gigabitEthernet 0/0.20
+CTG(config-subif)#ip nat inside 
+CTG(config-subif)#exit
+CTG(config)#interface gigabitEthernet 0/1
+CTG(config-if)#ip nat outside 
+CTG(config-if)#exit
+
+
+
+
+================ISP_B=================
+
+#Basic Config:
+Router>enable
+Router#configure terminal
+Router(config)#hostname ISP_B
+ISP_C(config)#no ip domain-lookup
+ISP_C(config)#line console 0
+ISP_C(config-line)#exec-timeout 0
+ISP_C(config-line)#exit
+
+#Give Interface IP :
+ISP_B(config)#interface gigabitEthernet 0/1
+ISP_B(config-if)#no shutdown 
+ISP_B(config-if)#ip address 202.0.0.1 255.255.255.252
+ISP_B(config-if)#exit
+
+ISP_B(config)#interface gigabitEthernet 0/0
+ISP_B(config-if)#no shutdown 
+ISP_B(config-if)#ip address 13.0.0.2 255.255.255.252
+ISP_B(config-if)#exit
+
+#Dafault Route towards IIG
+ISP_B(config)#ip route 0.0.0.0 0.0.0.0 13.0.0.1
+
+===========IIG==========
+#Basic Config
+Router>enable
+Router#configure terminal
+Router(config)#hostname IIG
+IIG(config)#no ip domain-lookup
+IIG(config)#line console 0
+IIG(config-line)#exec-timeout 0
+IIG(config-line)#exit
+
+#Give IP in Interface :
+IIG(config)#Interface gigabitEthernet 0/0
+IIG(config-if)#no shutdown 
+IIG(config-if)#ip address 11.10.10.2 255.255.255.252
+IIG(config-if)#exit
+
+IIG(config)#Interface gigabitEthernet 0/1
+IIG(config-if)#no shutdown 
+IIG(config-if)#ip address 13.0.0.1 255.255.255.252
+IIG(config-if)#exit
+
+IIG(config)#Interface gigabitEthernet 0/2
+IIG(config-if)#no shutdown 
+IIG(config-if)#ip address 12.0.0.1 255.255.255.252
+IIG(config-if)#exit
+
+
+
+
+--------------------------------------------------------------------------------------------------BGP Setup--------------------------------
+ISP_A(config)#router bgp 1001
+ISP_A(config-router)#no network 200.0.0.0
+ISP_A(config-router)#no network 11.10.10.0
+ISP_A(config-router)#network 200.0.0.0 mask 255.255.255.252
+ISP_A(config-router)#network 11.10.10.0 mask 255.255.255.252
+
+ISP_C(config)#router bgp 1002
+ISP_C(config-router)#no network 201.0.0.0
+ISP_C(config-router)#no network 12.0.0.0
+ISP_C(config-router)#network 201.0.0.0 mask 255.255.255.252
+ISP_C(config-router)#network 12.0.0.0 mask 255.255.255.252
+
+ISP_B(config)#router bgp 1003
+ISP_B(config-router)#no network 202.0.0.0
+ISP_B(config-router)#no network 13.0.0.0
+ISP_B(config-router)#network 202.0.0.0 mask 255.255.255.252
+ISP_B(config-router)#network 13.0.0.0 mask 255.255.255.252
+
+IIG(config)#router bgp 1000
+IIG(config-router)#no network 11.10.10.0
+IIG(config-router)#no network 12.0.0.0
+IIG(config-router)#no network 13.0.0.0
+IIG(config-router)#network 11.10.10.0 mask 255.255.255.252
+IIG(config-router)#network 12.0.0.0 mask 255.255.255.252
+IIG(config-router)#network 13.0.0.0 mask 255.255.255.252

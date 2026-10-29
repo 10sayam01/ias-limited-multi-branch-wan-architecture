@@ -1,0 +1,95 @@
+=============Dhaka==================
+#Tunnel with Cumilla:
+DHAKA(config)#interface tunnel 1
+DHAKA(config-if)#ip address 10.0.0.1 255.255.255.252
+DHAKA(config-if)#tunnel mode gre ip
+DHAKA(config-if)#tunnel source gigabitEthernet 0/1
+DHAKA(config-if)#tunnel destination 201.0.0.2
+DHAKA(config-if)#exit
+
+#tunnel with CTG
+DHAKA(config)#interface tunnel 2
+DHAKA(config-if)#ip address 10.0.0.5 255.255.255.252
+DHAKA(config-if)#tunnel mode gre ip
+DHAKA(config-if)#tunnel source gigabitEthernet 0/1
+DHAKA(config-if)#tunnel destination 202.0.0.2
+DHAKA(config-if)#exit
+
+#OSPF SETUP:
+DHAKA(config)#router ospf 1
+DHAKA(config-router)#router-id 1.1.1.1
+DHAKA(config-router)#network 10.10.10.1 0.0.0.3 area 10
+DHAKA(config-router)#network 10.0.0.0 0.0.0.3 area 0
+DHAKA(config-router)#network 10.0.0.4 0.0.0.3 area 0
+DHAKA(config-router)#redistribute static subnets
+
+
+=============CUMILLA==========
+
+#Tunnrl With Dhaka
+CUMILLA(config)#interface tunnel 1
+CUMILLA(config-if)#ip address 10.0.0.2 255.255.255.252
+CUMILLA(config-if)#tunnel mode gre ip
+CUMILLA(config-if)#tunnel source gigabitEthernet 0/1
+CUMILLA(config-if)#tunnel destination 200.0.0.1
+CUMILLA(config-if)#exit
+
+#ospf Setup
+CUMILLA(config)#router ospf 2
+CUMILLA(config-router)#router-id 2.2.2.2
+CUMILLA(config-router)#network 192.168.50.0  0.0.0.255 area 20
+CUMILLA(config-router)#network 192.168.60.0  0.0.0.255 area 20
+CUMILLA(config-router)#network 192.168.70.0  0.0.0.255 area 20
+CUMILLA(config-router)#network 10.0.0.0 0.0.0.3 area 0
+
+===============CTG============
+
+#Tunnrl With Dhaka
+CTG(config)#interface tunnel 1
+CTG(config-if)#ip address 10.0.0.6 255.255.255.252
+CTG(config-if)#tunnel mode gre ip
+CTG(config-if)#tunnel source gigabitEthernet 0/1
+CTG(config-if)#tunnel destination 200.0.0.1
+CTG(config-if)#exit
+
+#OSFP Setup :
+CTG(config)#router ospf 3
+CTG(config-router)#router-id 3.3.3.3
+CTG(config-router)#network 192.168.80.0 0.0.0.255 area 30
+CTG(config-router)#network 192.168.90.0 0.0.0.255 area 30
+CTG(config-router)#network 10.0.0.4 0.0.0.3 area 0
+
+
+
+
+
+
+============Remote Access==============
+
+=====CUMILLA========
+#SSH Enable in cumilla router :
+CUMILLA(config)#enable password 2222
+CUMILLA(config)#ip domain-name cumila.com
+CUMILLA(config)#crypto key generate rsa
+CUMILLA(config)#username IT password it123
+CUMILLA(config)#line vty 0 15
+CUMILLA(config-line)#transport input ssh
+
+
+
+==================ACL===================
+
+
+
+=========SW1=============
+SW1(config)#access-list 101 permit tcp any 192.168.10.0 0.0.0.255 established 
+SW1(config)#access-list 101 permit icmp any 192.168.10.0 0.0.0.255 echo-reply 
+SW1(config)#access-list 101 deny ip any 192.168.10.0 0.0.0.255
+SW1(config)#access-list 101 permit ip any any
+
+SW1(config)#interface vlan 10 
+SW1(config-if)#ip access-group 101 out 
+SW1(config-if)#exit 
+
+
+

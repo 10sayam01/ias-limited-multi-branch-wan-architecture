@@ -1,0 +1,120 @@
+==============SW4==========
+#Basic Config :
+Switch>enable
+Switch#configure terminal
+Switch(config)#hostname SW4
+SW4(config)#no ip domain-lookup 
+SW4(config)#line console 0
+SW4(config-line)#exec-timeout 0
+SW4(config-line)#exit
+
+SW4(config)#vlan 10
+SW4(config-vlan)#name IT
+SW4(config-vlan)#exit
+SW4(config)#vlan 20
+SW4(config-vlan)#name Sales
+SW4(config-vlan)#exit
+
+SW4(config)#interface range fastEthernet 0/1-10
+SW4(config-if-range)#switchport mode access
+SW4(config-if-range)#switchport access vlan 10
+SW4(config-if-range)#exit
+
+SW4(config)#interface range fastEthernet 0/11-20
+SW4(config-if-range)#switchport mode access 
+SW4(config-if-range)#switchport access vlan 20
+SW4(config-if-range)#exit
+
+#Config Trunk Port
+SW4(config)#interface gigabitEthernet 0/1
+SW4(config-if)#switchport mode trunk 
+SW4(config-if)#switchport trunk allowed vlan 10,20
+SW4(config-if)#exit
+
+=====================SW5===============
+
+#Basic Setup:
+Switch>enable
+Switch#configure terminal
+Switch(config)#hostname SW5
+SW5(config)#no ip domain-lookup 
+SW5(config)#line console 0
+SW5(config-line)#exec-timeout 0
+SW5(config-line)#exit
+
+#Vlan Create :
+SW5(config)#vlan 10
+SW5(config-vlan)#name IT
+SW5(config-vlan)#exit
+SW5(config)#Vlan 20
+SW5(config-vlan)#name Sales
+SW5(config-vlan)#exit
+
+
+SW5(config)#interface range fastEthernet 0/1-10
+SW5(config-if-range)#switchport mode access 
+SW5(config-if-range)#switchport access vlan 10
+SW5(config-if-range)#exit
+
+SW5(config-if-range)#interface range fastEthernet 0/11-20
+SW5(config-if-range)#switchport mode access 
+SW5(config-if-range)#switchport access vlan 20
+SW5(config-if-range)#exit
+
+#Config Trunk Port
+SW5(config)#interface gigabitEthernet 0/1
+SW5(config-if)#switchport mode trunk 
+SW5(config-if)#switchport trunk allowed vlan 10,20
+SW5(config-if)#exit
+
+SW5(config)#interface gigabitEthernet 0/2
+SW5(config-if)#switchport mode trunk 
+SW5(config-if)#switchport trunk allowed vlan 10,20
+SW5(config-if)#exit
+
+===========================CTG==========================
+
+#Basic Setup:
+Router>enable
+Router#configure terminal
+Router(config)#hostname CTG
+
+CTG(config)#no ip domain-lookup 
+CTG(config)#line console 0
+CTG(config-line)#exec-timeout 0
+CTG(config-line)#exit
+
+#Interface Setup
+CTG(config)#interface gigabitEthernet 0/0
+CTG(config-if)#no shutdown
+CTG(config-if)#exit
+
+
+CTG(config)#interface gigabitEthernet 0/0.10
+CTG(config-subif)#encapsulation dot1Q 10
+CTG(config-subif)#ip address 192.168.80.1 255.255.255.0
+CTG(config-subif)#exit
+
+CTG(config)#interface gigabitEthernet 0/0.20
+CTG(config-subif)#encapsulation dot1Q 20
+CTG(config-subif)#ip address 192.168.90.1 255.255.255.0
+CTG(config-subif)#exit
+
+#Dhcp For VLAN 10 :
+CTG(config)#ip dhcp pool vlan10
+CTG(dhcp-config)#network 192.168.80.0 255.255.255.0
+CTG(dhcp-config)#default-router 192.168.80.1
+CTG(dhcp-config)#dns-server 8.8.8.8
+CTG(dhcp-config)#exit
+
+#Dhcp For VLAN 20 :
+CTG(config)#ip dhcp pool vlan20
+CTG(dhcp-config)#network 192.168.90.0 255.255.255.0
+CTG(dhcp-config)#default-router 192.168.90.1
+CTG(dhcp-config)#dns-server 8.8.8.8
+CTG(dhcp-config)#exit
+
+#Dhcp Exclude IPs
+CTG(config)#ip dhcp excluded-address 192.168.80.1 192.168.80.20
+CTG(config)#ip dhcp excluded-address 192.168.90.1 192.168.90.20
+

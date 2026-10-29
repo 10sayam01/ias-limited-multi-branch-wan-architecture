@@ -1,0 +1,817 @@
+===============DHAKA#show running-config======================== 
+Building configuration...
+
+Current configuration : 1670 bytes
+!
+version 15.1
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+no service password-encryption
+!
+hostname DHAKA
+!
+!
+!
+!
+!
+!
+!
+!
+ip cef
+no ipv6 cef
+!
+!
+!
+!
+license udi pid CISCO2911/K9 sn FTX1524CP65-
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+no ip domain-lookup
+!
+!
+spanning-tree mode pvst
+!
+!
+!
+!
+!
+!
+interface Tunnel1
+ ip address 10.0.0.1 255.255.255.252
+ mtu 1476
+ tunnel source GigabitEthernet0/1
+ tunnel destination 201.0.0.2
+!
+!
+interface Tunnel2
+ ip address 10.0.0.5 255.255.255.252
+ mtu 1476
+ tunnel source GigabitEthernet0/1
+ tunnel destination 202.0.0.2
+!
+!
+interface GigabitEthernet0/0
+ ip address 10.10.10.1 255.255.255.252
+ ip nat inside
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/1
+ ip address 200.0.0.1 255.255.255.252
+ ip nat outside
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/2
+ no ip address
+ duplex auto
+ speed auto
+ shutdown
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+router ospf 1
+ router-id 1.1.1.1
+ log-adjacency-changes
+ redistribute static subnets 
+ network 10.10.10.0 0.0.0.3 area 10
+ network 10.0.0.0 0.0.0.3 area 0
+ network 10.0.0.4 0.0.0.3 area 0
+!
+ip nat pool natp1 200.0.0.1 200.0.0.1 netmask 255.255.255.252
+ip nat inside source list 10 pool natp1 overload
+ip classless
+ip route 192.168.10.0 255.255.255.0 10.10.10.2 
+ip route 192.168.20.0 255.255.255.0 10.10.10.2 
+ip route 192.168.30.0 255.255.255.0 10.10.10.2 
+ip route 0.0.0.0 0.0.0.0 200.0.0.2 
+!
+ip flow-export version 9
+!
+!
+access-list 10 permit 192.168.10.0 0.0.0.255
+access-list 10 permit 192.168.20.0 0.0.0.255
+access-list 10 permit 192.168.30.0 0.0.0.255
+!
+!
+!
+!
+!
+line con 0
+ exec-timeout 0 0
+!
+line aux 0
+!
+line vty 0 4
+ login
+!
+!
+!
+end
+
+
+
+
+
+
+
+=====================CUMILLA#show running-config======================== 
+Building configuration...
+
+Current configuration : 2423 bytes
+!
+version 15.1
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+no service password-encryption
+!
+hostname CUMILLA
+!
+!
+!
+enable password 2222
+!
+!
+ip dhcp excluded-address 192.168.50.1 192.168.50.5
+ip dhcp excluded-address 192.168.60.1 192.168.60.5
+ip dhcp excluded-address 192.168.70.1 192.168.70.5
+!
+ip dhcp pool vlan10
+ network 192.168.50.0 255.255.255.0
+ default-router 192.168.50.1
+ dns-server 8.8.8.8
+ip dhcp pool vlan20
+ network 192.168.60.0 255.255.255.0
+ default-router 192.168.60.1
+ dns-server 8.8.8.8
+ip dhcp pool vlan30
+ network 192.168.70.0 255.255.255.0
+ default-router 192.168.70.1
+ dns-server 8.8.8.8
+!
+!
+!
+ip cef
+no ipv6 cef
+!
+!
+!
+username IT password 0 it123
+!
+!
+license udi pid CISCO2911/K9 sn FTX1524COW0-
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+ip ssh version 1
+no ip domain-lookup
+ip domain-name cumila.com
+!
+!
+spanning-tree mode pvst
+!
+!
+!
+!
+!
+!
+interface Tunnel1
+ ip address 10.0.0.2 255.255.255.252
+ mtu 1476
+ tunnel source GigabitEthernet0/1
+ tunnel destination 200.0.0.1
+!
+!
+interface GigabitEthernet0/0
+ no ip address
+ ip nat inside
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/0.10
+ encapsulation dot1Q 10
+ ip address 192.168.50.1 255.255.255.0
+ ip nat inside
+!
+interface GigabitEthernet0/0.20
+ encapsulation dot1Q 20
+ ip address 192.168.60.1 255.255.255.0
+ ip nat inside
+!
+interface GigabitEthernet0/0.30
+ encapsulation dot1Q 30
+ ip address 192.168.70.1 255.255.255.0
+ ip nat inside
+!
+interface GigabitEthernet0/1
+ ip address 201.0.0.2 255.255.255.252
+ ip nat outside
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/2
+ no ip address
+ duplex auto
+ speed auto
+ shutdown
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+router ospf 2
+ router-id 2.2.2.2
+ log-adjacency-changes
+ network 192.168.50.0 0.0.0.255 area 20
+ network 192.168.60.0 0.0.0.255 area 20
+ network 192.168.70.0 0.0.0.255 area 20
+ network 10.0.0.0 0.0.0.3 area 0
+!
+ip nat pool PoolForNat 201.0.0.2 201.0.0.1 netmask 255.255.255.252
+ip nat pool pool1 201.0.0.2 201.0.0.2 netmask 255.255.255.252
+ip nat inside source list 20 pool pool1 overload
+ip classless
+ip route 0.0.0.0 0.0.0.0 201.0.0.1 
+!
+ip flow-export version 9
+!
+!
+access-list 20 permit 192.168.50.0 0.0.0.255
+access-list 20 permit 192.168.60.0 0.0.0.255
+access-list 20 permit 192.168.70.0 0.0.0.255
+!
+!
+!
+!
+!
+line con 0
+ exec-timeout 0 0
+!
+line aux 0
+!
+line vty 0 4
+ login
+ transport input ssh
+line vty 5 15
+ login
+ transport input ssh
+!
+!
+!
+end
+
+=================CTG#show running-config ====================
+Building configuration...
+
+Current configuration : 1820 bytes
+!
+version 15.1
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+no service password-encryption
+!
+hostname CTG
+!
+!
+!
+!
+ip dhcp excluded-address 192.168.80.1 192.168.80.20
+ip dhcp excluded-address 192.168.90.1 192.168.90.20
+!
+ip dhcp pool vlan10
+ network 192.168.80.0 255.255.255.0
+ default-router 192.168.80.1
+ dns-server 8.8.8.8
+ip dhcp pool vlan20
+ network 192.168.90.0 255.255.255.0
+ default-router 192.168.90.1
+ dns-server 8.8.8.8
+!
+!
+!
+ip cef
+no ipv6 cef
+!
+!
+!
+!
+license udi pid CISCO2911/K9 sn FTX1524H40S-
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+no ip domain-lookup
+!
+!
+spanning-tree mode pvst
+!
+!
+!
+!
+!
+!
+interface Tunnel1
+ ip address 10.0.0.6 255.255.255.252
+ mtu 1476
+ tunnel source GigabitEthernet0/1
+ tunnel destination 200.0.0.1
+!
+!
+interface GigabitEthernet0/0
+ no ip address
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/0.10
+ encapsulation dot1Q 10
+ ip address 192.168.80.1 255.255.255.0
+ ip nat inside
+!
+interface GigabitEthernet0/0.20
+ encapsulation dot1Q 20
+ ip address 192.168.90.1 255.255.255.0
+ ip nat inside
+!
+interface GigabitEthernet0/1
+ ip address 202.0.0.2 255.255.255.252
+ ip nat outside
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/2
+ no ip address
+ duplex auto
+ speed auto
+ shutdown
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+router ospf 3
+ router-id 3.3.3.3
+ log-adjacency-changes
+ network 192.168.80.0 0.0.0.255 area 30
+ network 192.168.90.0 0.0.0.255 area 30
+ network 10.0.0.4 0.0.0.3 area 0
+!
+ip nat pool p1 202.0.0.2 202.0.0.2 netmask 255.255.255.252
+ip nat inside source list 30 pool p1 overload
+ip classless
+ip route 0.0.0.0 0.0.0.0 202.0.0.1 
+!
+ip flow-export version 9
+!
+!
+access-list 30 permit 192.168.80.0 0.0.0.255
+access-list 30 permit 192.168.90.0 0.0.0.255
+!
+!
+!
+!
+!
+line con 0
+ exec-timeout 0 0
+!
+line aux 0
+!
+line vty 0 4
+ login
+!
+!
+!
+end
+
+===========================ISP_B#show running-config ============
+Building configuration...
+
+Current configuration : 929 bytes
+!
+version 15.1
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+no service password-encryption
+!
+hostname ISP_B
+!
+!
+!
+!
+!
+!
+!
+!
+ip cef
+no ipv6 cef
+!
+!
+!
+!
+license udi pid CISCO2911/K9 sn FTX1524F442-
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+spanning-tree mode pvst
+!
+!
+!
+!
+!
+!
+interface GigabitEthernet0/0
+ ip address 13.0.0.2 255.255.255.252
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/1
+ ip address 202.0.0.1 255.255.255.252
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/2
+ no ip address
+ duplex auto
+ speed auto
+ shutdown
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+router bgp 1003
+ bgp log-neighbor-changes
+ no synchronization
+ neighbor 13.0.0.1 remote-as 1000
+ network 202.0.0.0 mask 255.255.255.252
+ network 13.0.0.0 mask 255.255.255.252
+!
+ip classless
+ip route 0.0.0.0 0.0.0.0 13.0.0.1 
+!
+ip flow-export version 9
+!
+!
+!
+!
+!
+!
+!
+line con 0
+!
+line aux 0
+!
+line vty 0 4
+ login
+!
+!
+!
+end
+
+
+
+
+
+
+
+
+
+
+====================ISP_C#show running-config 
+Building configuration...
+
+Current configuration : 967 bytes
+!
+version 15.1
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+no service password-encryption
+!
+hostname ISP_C
+!
+!
+!
+!
+!
+!
+!
+!
+ip cef
+no ipv6 cef
+!
+!
+!
+!
+license udi pid CISCO2911/K9 sn FTX1524OCPM-
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+no ip domain-lookup
+!
+!
+spanning-tree mode pvst
+!
+!
+!
+!
+!
+!
+interface GigabitEthernet0/0
+ ip address 12.0.0.2 255.255.255.252
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/1
+ ip address 201.0.0.1 255.255.255.252
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/2
+ no ip address
+ duplex auto
+ speed auto
+ shutdown
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+router bgp 1002
+ bgp log-neighbor-changes
+ no synchronization
+ neighbor 12.0.0.1 remote-as 1000
+ network 201.0.0.0 mask 255.255.255.252
+ network 12.0.0.0 mask 255.255.255.252
+!
+ip classless
+ip route 0.0.0.0 0.0.0.0 12.0.0.1 
+!
+ip flow-export version 9
+!
+!
+!
+!
+!
+!
+!
+line con 0
+ exec-timeout 0 0
+!
+line aux 0
+!
+line vty 0 4
+ login
+!
+!
+!
+end
+
+===========ISP_A#show running-config 
+Building configuration...
+
+Current configuration : 978 bytes
+!
+version 15.1
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+no service password-encryption
+!
+hostname ISP_A
+!
+!
+!
+!
+!
+!
+!
+!
+no ip cef
+no ipv6 cef
+!
+!
+!
+!
+license udi pid CISCO2911/K9 sn FTX1524P2VR-
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+no ip domain-lookup
+!
+!
+spanning-tree mode pvst
+!
+!
+!
+!
+!
+!
+interface GigabitEthernet0/0
+ ip address 11.10.10.1 255.255.255.252
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/1
+ ip address 200.0.0.2 255.255.255.252
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/2
+ no ip address
+ duplex auto
+ speed auto
+ shutdown
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+router bgp 1001
+ bgp log-neighbor-changes
+ no synchronization
+ neighbor 11.10.10.2 remote-as 1000
+ network 200.0.0.0 mask 255.255.255.252
+ network 11.10.10.0 mask 255.255.255.252
+!
+ip classless
+ip route 0.0.0.0 0.0.0.0 11.10.10.2 
+!
+ip flow-export version 9
+!
+!
+!
+!
+!
+!
+!
+line con 0
+ exec-timeout 0 0
+!
+line aux 0
+!
+line vty 0 4
+ login
+!
+!
+!
+end
+
+===================IIG#show running-config 
+Building configuration...
+
+Current configuration : 1272 bytes
+!
+version 15.1
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+no service password-encryption
+!
+hostname IIG
+!
+!
+!
+!
+!
+!
+!
+!
+no ip cef
+no ipv6 cef
+!
+!
+!
+!
+license udi pid CISCO2911/K9 sn FTX15246K91-
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+no ip domain-lookup
+!
+!
+spanning-tree mode pvst
+!
+!
+!
+!
+!
+!
+interface GigabitEthernet0/0
+ ip address 11.10.10.2 255.255.255.252
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/1
+ ip address 13.0.0.1 255.255.255.252
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/2
+ ip address 12.0.0.1 255.255.255.252
+ duplex auto
+ speed auto
+!
+interface FastEthernet0/3/0
+ switchport mode access
+!
+interface FastEthernet0/3/1
+ switchport mode access
+!
+interface FastEthernet0/3/2
+ switchport mode access
+!
+interface FastEthernet0/3/3
+ switchport mode access
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+router bgp 1000
+ bgp log-neighbor-changes
+ no synchronization
+ neighbor 11.10.10.1 remote-as 1001
+ neighbor 12.0.0.2 remote-as 1002
+ neighbor 13.0.0.2 remote-as 1003
+ network 11.10.10.0 mask 255.255.255.252
+ network 12.0.0.0 mask 255.255.255.252
+ network 13.0.0.0 mask 255.255.255.252
+!
+ip classless
+!
+ip flow-export version 9
+!
+!
+!
+!
+!
+!
+!
+line con 0
+ exec-timeout 0 0
+!
+line aux 0
+!
+line vty 0 4
+ login
+!
+!
+!
+end

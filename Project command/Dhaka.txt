@@ -1,0 +1,164 @@
+=====================SW1================
+#Basic Setup
+Switch>enable
+Switch#configure terminal
+Switch(config)#hostname SW1
+SW1(config)#no ip domain-lookup 
+SW1(config)#line console 0
+SW1(config-line)#exec-timeout 0
+SW1(config-line)#exit
+
+#Create VLAN 10,20,30
+SW1(config)#vlan 10
+SW1(config-vlan)#name IT
+SW1(config-vlan)#exit
+SW1(config)#Vlan 20
+SW1(config-vlan)#name HR
+SW1(config-vlan)#exit
+SW1(config)#vlan 30
+SW1(config-vlan)#name Sales
+SW1(config-vlan)#exit
+
+SW1(config)#interface range fastEthernet 0/3-4 
+SW1(config-if-range)#switchport mode access 
+SW1(config-if-range)#switchport access vlan 10
+SW1(config-if-range)#exit
+
+SW1(config)#interface range fastEthernet 0/5-6
+SW1(config-if-range)#switchport mode access 
+SW1(config-if-range)#switchport access vlan  20
+SW1(config-if-range)#exit
+
+SW1(config)#interface range fastEthernet 0/7-8 
+SW1(config-if-range)#switchport mode access 
+SW1(config-if-range)#switchport access vlan 30
+SW1(config-if-range)#exit
+
+
+#Set Trunk Port
+SW1(config-if)#interface fastEthernet 0/2
+SW1(config-if)#switchport trunk encapsulation dot1q 
+SW1(config-if)#switchport mode trunk 
+SW1(config-if)#switchport trunk allowed vlan 10,20,30
+SW1(config-if)#exit
+
+#Config Default Gateway
+SW1(config)#interface vlan 10
+SW1(config-if)#no shutdown 
+SW1(config-if)#ip address 192.168.10.1 255.255.255.0
+SW1(config-if)#exit
+SW1(config)#interface vlan 20
+SW1(config-if)#ip address 192.168.20.1 255.255.255.0
+SW1(config-if)#no shutdown 
+SW1(config-if)#exit
+SW1(config)#interface vlan 30
+SW1(config-if)#no shutdown 
+SW1(config-if)#ip address 192.168.30.1 255.255.255.0
+SW1(config-if)#exit
+
+#Start Routing in Switch
+SW1(config)#ip routing 
+
+#Give ip in Switchport
+SW1(config)#interface gigabitEthernet 0/1
+SW1(config-if)#no switchport 
+SW1(config-if)#ip add 10.10.10.2 255.255.255.252
+
+#Static route
+SW1(config-if)#ip route 0.0.0.0 0.0.0.0 10.10.10.1
+
+#for Dhcp 
+SW1(config)#vlan 40
+SW1(config-vlan)#name DHCP_Server
+SW1(config-vlan)#exit
+
+SW1(config)#interface fastEthernet 0/1
+SW1(config-if)#switchport mode access 
+SW1(config-if)#switchport access vlan 40
+SW1(config-if)#exit
+
+SW1(config)#interface vlan 40
+SW1(config-if)#no shutdown 
+SW1(config-if)#ip address 192.168.40.1 255.255.255.0
+SW1(config-if)#exit
+
+#Dhcp Relay Setup:
+SW1(config)#interface vlan 10
+SW1(config-if)#ip helper-address 192.168.40.10
+SW1(config-if)#exit
+
+SW1(config)#interface vlan 20
+SW1(config-if)#ip helper-address 192.168.40.10
+SW1(config-if)#exit
+
+SW1(config)#interface vlan 30
+SW1(config-if)#ip helper-address 192.168.40.10
+SW1(config-if)#exit
+
+
+
+
+
+=====================SW2================
+#Basic Setup
+Switch>enable
+Switch#configure terminal
+Switch(config)#hostname SW2
+SW2(config)#no ip domain-lookup 
+SW2(config)#line console 0
+SW2(config-line)#exec-timeout 0
+SW2(config-line)#exit
+
+#Create Vlan
+SW2(config)#vlan 10
+SW2(config-vlan)#name IT
+SW2(config-vlan)#exit
+SW2(config)#vlan 20
+SW2(config-vlan)#name HR
+SW2(config-vlan)#exit
+SW2(config)#vlan 30
+SW2(config-vlan)#name Sales
+SW2(config-vlan)#exit
+
+
+SW2(config)#interface range fastEthernet 0/2-3
+SW2(config-if-range)#switchport mode access 
+SW2(config-if-range)#switchport access vlan 10
+SW2(config-if-range)#exit
+
+SW2(config)#interface range fastEthernet 0/4-5
+SW2(config-if-range)#switchport mode access 
+SW2(config-if-range)#switchport access vlan 20
+
+SW2(config-if-range)#interface range fastEthernet 0/6-7
+SW2(config-if-range)#switchport mode access 
+SW2(config-if-range)#switchport access vlan 30
+SW2(config-if-range)#exit
+
+SW2(config)#interface fastEthernet 0/1
+SW2(config-if)#switchport mode trunk 
+SW2(config-if)#switchport trunk allowed vlan 10,20,30
+
+
+========================Dhaka==============
+#Basic Config
+Router>enable
+Router#config terminal
+Router(config)#hostname DHAKA
+DHAKA(config)#no ip domain-lookup 
+DHAKA(config)#line console 0
+DHAKA(config-line)#exec-timeout 0
+DHAKA(config-line)#exit
+
+#give IP in Interface
+DHAKA(config)#interface gigabitEthernet 0/0
+DHAKA(config-if)#no shutdown
+DHAKA(config-if)#ip address 10.10.10.1 255.255.255.252
+
+#Set Static route for LAN Network
+DHAKA(config)#ip route 192.168.10.0 255.255.255.0 10.10.10.2
+DHAKA(config)#ip route 192.168.20.0 255.255.255.0 10.10.10.2
+DHAKA(config)#ip route 192.168.30.0 255.255.255.0 10.10.10.2
+
+
+
