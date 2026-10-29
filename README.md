@@ -1,4 +1,4 @@
-# ias-limited-inter-branch-wan-architecture
+# ias-limited-multi-branch-wan-architecture
 
 A multi-branch network project built in Cisco Packet Tracer. It connects three branches: Dhaka, Cumilla and Chattogram (CTG).
 
