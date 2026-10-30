@@ -37,7 +37,7 @@ Cisco Packet Tracer, VLAN, Trunking, DHCP, NAT/PAT, BGP, OSPF, GRE, SSH, ACL
 ## Files in This Repository
 - `Topology with Config.pkt`: Packet Tracer project file
 - `Project command/`: router and switch commands
-- `Full Project overview with Command and topology.pptx`: project presentation
+- `CCNA project.pptx`: project presentation
 - `screenshots of Config/`: topology screenshots
 
 ## How to Open
@@ -46,7 +46,7 @@ Cisco Packet Tracer, VLAN, Trunking, DHCP, NAT/PAT, BGP, OSPF, GRE, SSH, ACL
 3. Open it in Packet Tracer.
 
 ## Video
-[Watch on YouTube]([https://youtu.be/Xi3_XvCKv7E])
+[Watch on YouTube](https://youtu.be/Xi3_XvCKv7E)
 
 ## Author
 [Irfan Ahmmed Sayam] | [https://www.linkedin.com/in/irfan-ahmmed-sayam-67325a439/]
